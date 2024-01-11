@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>The Meal DataBase</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-dark">
+      <div class="container-lg">
+        <a class="navbar-brand" href="index.html">
+          <img src="https://www.themealdb.com/images/logo.png" alt="" height="30" />
+        </a>
+        <button class="navbar-toggler text-light bg-light" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon text-dark">
+            <!-- Puedes añadir un ícono personalizado aquí -->
+          </span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-evenly align-items-stretch" id="collapsibleNavId">
+          <div class="flex-column w-40 py-2">
+            <form class="d-flex my-2 my-lg-0" id="searchByName">
+              <input class="form-control text-center" type="text" placeholder="Search a meal by name" id="mealName" />
+              <button class="btn btn-outline-light my-2 my-sm-0 mr-10 mx-2" type="submit">Search</button>
+            </form>
+            <p class="error-feedback text-danger p-0 mb-0"></p>
+          </div>
+          <div class="flex-column w-100 py-2 d-flex align-items-center">
+            <form class="d-flex my-2 my-sm-0 w-75" id="searchByIngredient">
+              <input class="form-control text-center mb-0 w-75" type="text" list="datalistOptions"
+                placeholder="Search a meal by an ingredient" id="nombreIngrediente" />
+              <datalist id="datalistOptions"></datalist>
+              <button class="btn btn-outline-light my-2 my-sm-0 mx-2 mb-0 mt-0" type="submit">Search</button>
+            </form>
+            <div class="w-100 d-flex justify-content-center align-items-center">
+              <p class="error-feedback  text-danger fw-bold p-0 mb-0"></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+
+
+
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="alert alert-success my-5 text-center" role="alert" id="webMessage">
+        <h1 class="display-4 mb-4">Welcome to the Main Food Database</h1>
+        <p class="lead mb-4">Discover a world of delicious recipes at your fingertips.</p>
+        <img src="https://www.themealdb.com/images/logo-small.png" alt="MealDB Logo" class="img-fluid"
+          style="max-width: 150px;" />
+      </div>
+
+
+      <div class="alert alert-primary my-5 text-center" role="alert" id="filtros">
+        <h2 class="mb-4">Filters</h2>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="pais" class="form-label">Country</label>
+            <select class="form-select" id="pais">
+              <option selected>--</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="categoria" class="form-label">Meal category</label>
+            <select class="form-select" id="categoria">
+              <option selected>--</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="etiqueta" class="form-label">Tags</label>
+            <select class="form-select" id="etiqueta">
+              <option selected>--</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-success mt-4" id="applyFilters">Apply Filters</button>
+        <button class="btn btn-danger mt-4 ms-2" id="resetFilters">Reset Filters</button>
+      </div>
+
+      <div id="results" class="row flex-wrap justify-content-around"></div>
+      <!--div para los resultados-->
+    </div>
+  </main>
+
+  <template id="meal">
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3 my-4">
+      <div class="card h-100">
+        <img class="card-img-top bb position-relative mealImage" src="" alt="Title" />
+        <div class="d-flex flex-wrap justify-content-between shadow p-2 rounded-5">
+          <div class="bg-warning w-100 d-flex justify-content-center rounded-4 align-items-center text-center">
+            <strong class="align-items-center type fs-5"></strong>
+          </div>
+          <div class="w-100 d-flex justify-content-center align-items-center mt-2">
+            <div class="w-50-ellipsis d-none d-xl-block">
+              <strong class="fs-6 country"></strong>
+            </div>
+            <img src="" alt="" class="ml-2 mr-2 d-xl-flex countryFlag" />
+          </div>
+
+        </div>
+        <div class="w-100 d-flex justify-content-center align-items-center card-description">
+          <p class="text-center mb-0 fs-3 fst-italic fw-bold mealName"></p>
+        </div>
+
+        <hr class="m-2" />
+
+        <div class="row flex-wrap justify-content-center align-content-stretch shadow rounded-3 m-2"
+          id="divIngredients">
+          <h4 class="card-title mb-4 bg-info-subtle rounded-2 p-2 text-center">Main ingredients</h4>
+
+          <div class="ingredient col-3 col-sm-6 col-lg-6 col-xl-6 my-2 text-center ingredient-container">
+            <div class="bg-cardbody rounded-4">
+              <img src="" alt="" class="card-img-top ingredient1image" />
+            </div>
+            <p class="ingredient1 mb-0"></p>
+          </div>
+
+          <div class="col-3 col-sm-6 col-lg-6 col-xl-6 my-2 text-center ingredient ingredient-container">
+            <div class="bg-cardbody rounded-4">
+              <img src="" alt="" class="card-img-top ingredient2image" />
+            </div>
+            <p class="ingredient2 mb-0"></p>
+          </div>
+
+          <div class="col-3 col-sm-6 col-lg-6 col-xl-6 my-2 text-center ingredient ingredient-container">
+            <div class="bg-cardbody rounded-4">
+              <img src="" alt="" class="card-img-top ingredient3image" />
+            </div>
+            <p class="ingredient3 mb-0"></p>
+          </div>
+
+          <div class="col-3 col-sm-6 col-lg-6 col-xl-6 my-2 text-center ingredient ingredient-container">
+            <div class="bg-cardbody rounded-4">
+              <img src="" alt="" class="card-img-top ingredient4image" />
+            </div>
+            <p class="ingredient4 mb-0"></p>
+          </div>
+        </div>
+
+        <div class="row flex-wrap justify-content-center align-content-stretch shadow rounded-3 m-2">
+          <h5 class="mb-4 bg-info-subtle rounded-2 p-2 text-center">Tags</h5>
+
+          <div
+            class="tags d-flex flex-wrap justify-content-center align-items-center text-center rounded-3 w-100 tags-container">
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+
+  <footer class="bg-dark text-light text-center py-3">
+    <p>&copy; 2024 The Meal DataBase. Designed by Pablo Atahonero, Jhonny, and Saul Barrajon.</p>
+  </footer>
+
+  <!-- Botón para subir al top de la página -->
+  <button id="scrollTopBtn" class="btn btn-light rounded-circle position-fixed bottom-0 end-0 m-4" style="display:none">
+    <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+  </button>
+
+
+  <script>document.addEventListener('scroll', function () {
+      let scrolled = window.scrollY;
+      let windowHeight = window.innerHeight;
+      let bodyHeight = document.body.clientHeight;
+      // Muestra el footer cuando estás cerca del final de la página
+      document.body.classList.toggle('scrolled-footer-visible', scrolled + windowHeight >= bodyHeight - 200);
+    })
+
+    /*-----------------------------------------------
+    ---------------boton scroll----------------------
+    -------------------------------------------------*/
+
+    window.onscroll = function () {
+      scrollFunction();
+    };
+
+    function scrollFunction() {
+      var scrollTopBtn = document.getElementById("scrollTopBtn");
+
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollTopBtn.style.display = "block";
+      } else {
+        scrollTopBtn.style.display = "none";
+      }
+    }
+
+    // Función para animar el scroll al top de la página
+    document.getElementById("scrollTopBtn").onclick = function () {
+      scrollToTop();
+    };
+
+    function scrollToTop() {
+      document.documentElement.scrollTop = 0;
+    }
+  </script>
+  <script>
+
+    //capturamos el formulario donde el usuario hará la busqueda de comida
+    let formulario = document.getElementById("searchByName");
+    //capturamos la plantilla de cada plato y el contenedor donde irán los resultados
+    let plantilla = document.getElementById("meal").content;
+    let divResultados = document.getElementById("results");
+
+    //Ponemos todos los url necesarios para construir los diferentes url más tarde a los que haremos fetch
+    const urlComidas = "https://www.themealdb.com/api/json/v1/1/search.php";
+    const urlFotoIngredientes = "https://www.themealdb.com/images/ingredients/";
+    const listCategories = "https://www.themealdb.com/api/json/v1/1/list.php?c=list";
+
+    //capturamos también el mensaje donde le mostraremos un mensaje al usuario si la busqueda no existe
+    let mensajeWeb = document.getElementById("webMessage");
+
+    //capturamos los botones de aplicar y  reestablecer los filtros
+    let btnaplicarFiltros = document.getElementById("applyFilters");
+    let btnresetFiltros = document.getElementById("resetFilters");
+
+    //arrays para ver la correspondencia entre  la abreviación del pais y la abreviación de las banderas según la API
+    const region = [
+      "British",
+      "American",
+      "French",
+      "Canadian",
+      "Jamaican",
+      "Chinese",
+      "Dutch",
+      "Egyptian",
+      "Greek",
+      "Indian",
+      "Irish",
+      "Italian",
+      "Japanese",
+      "Kenian",
+      "Malaysian",
+      "Mexican",
+      "Moroccan",
+      "Croatian",
+      "Norwegian",
+      "Portuguese",
+      "Russian",
+      "Argentinian",
+      "Spanish",
+      "Slovakian",
+      "Thai",
+      "Arabian",
+      "Vietnamese",
+      "Turkish",
+      "Syrian",
+      "Argelian",
+      "Tunisian",
+      "Polish",
+      "Filipino",
+    ];
+
+    const countryFlags = [
+      "gb",
+      "us",
+      "fr",
+      "ca",
+      "jm",
+      "cn",
+      "nl",
+      "eg",
+      "gr",
+      "in",
+      "ie",
+      "it",
+      "jp",
+      "kn",
+      "my",
+      "mx",
+      "ma",
+      "hr",
+      "no",
+      "pt",
+      "ru",
+      "ar",
+      "es",
+      "sk",
+      "th",
+      "sa",
+      "vn",
+      "tr",
+      "sy",
+      "dz",
+      "tn",
+      "pl",
+      "ph",
+    ];
+
+    //lo primero que hacemos es esconder los filtros al entrar por primera vez en la página
+    document.querySelector("#filtros").style.display = "none";
+
+    //Aquí tenemos la funcion para resetear los filtros
+    btnresetFiltros.addEventListener("click", (e) => resetearFiltros());
+
+    function resetearFiltros() {
+      document.getElementById("pais").getElementsByTagName("option")[0].selected = "selected";
+      document.getElementById("categoria").getElementsByTagName("option")[0].selected = "selected";
+      document.getElementById("etiqueta").getElementsByTagName("option")[0].selected = "selected";
+    }
+
+    /////////////////////////////////////////////Busqueda por nombre////////////////////////////////
+    //primero declaramos la variable nombreComida una vez
+    let nombreComida;
+
+    /*Cuando se haga click en buscar frenaremos el envío del formulario y
+    pondremos la variable nombreIngrediente2 a null para que no confunda esta busqueda de comida por nombre
+    con la que se hará luego en searchByIngredient
+    
+    
+    */
+
+    formulario.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      //Si el párrafo de la busqueda por ingrediente contiene la clase "error-feedback":
+      if (
+        document.querySelector("#nombreIngrediente").parentNode.parentNode.querySelector(".text-danger").classList.contains("error-feedback")
+      ) {
+        //Removemos el texto en el párrafo del html en caso de haberlo
+        document.querySelector("#nombreIngrediente").parentNode.parentNode.querySelector(".error-feedback").textContent = "";
+        //Y removemos al padre del input la clase "error" en caso de haberlo
+        document.querySelector("#nombreIngrediente").parentNode.classList.remove("error");
+      }
+
+      document.querySelector("#nombreIngrediente").value = "";
+
+      //Nombre ingrediente 2 se utiliza para utilizarlo en el filtrado de las comidas buscadas por ingredientes
+      nombreIngrediente2 = null;
+
+      let valido = true;
+
+      //capturamos el input donde nos han introducido la comida y lo recortamos
+      nombreComida = document.getElementById("mealName");
+
+      if (!validarNombre(nombreComida)) {
+        valido = false;
+      }
+
+      if (valido) {
+        nombreComida = nombreComida.value.trim();
+
+        //llamamos la metodo que nos devuelve el listado de comidas al buscar por un nombre introducido por el usuario
+        getMealsByName(nombreComida)
+          .then((comidas) => {
+            //cuando nos hayan llegado los resultados limpiamos los filtros si los hubiera(pues quizás los hayamos utilzado en una búsqueda anterior)
+            resetearFiltros();
+            //Vaciamos todo el div de los resultados
+            divResultados.innerHTML = "";
+            /*Ahora bien,si la lista está no está vacía modificaremos pintaremos las comidas y 
+            quitaremos el mensaje de error si lo tenía de antes*/
+            if (comidas.meals != null) {
+              pintaComidas(comidas);
+              if (mensajeWeb.classList.contains("alert-danger")) {
+                mensajeWeb.classList.remove("alert-danger");
+                mensajeWeb.classList.add("alert-light");
+              }
+              /*Si la lista no está vacía
+              (independientemente de que antes el mensaje web tuviese o no el color rojo que indica el error)
+              mostraremos el mensaje de que se han encontrado resultados y añadiremos el cuadro para que pueda filtrar los 
+              resultados*/
+              mensajeWeb.querySelector("p").innerHTML = "Search results for the meal: <strong>'" + nombreComida + "'</strong>";
+              document.querySelector("#filtros").style.display = "block";
+            }
+          })
+          .catch(
+            /*Si ha habido un error cambiaré el color del mensaje que aparece en la web y esconderé los filtros*/
+            mensajeWeb.classList.remove("alert-light"),
+            mensajeWeb.classList.add("alert-danger"),
+            (mensajeWeb.querySelector("p").textContent = "No matching results for the meal: '" + nombreComida + "'"),
+            (document.querySelector("#filtros").style.display = "none")
+          );
+        //al realizar la búsqueda borro del input el valor que me había
+        document.querySelector("#mealName").value = "";
+      }
+    });
+
+    ///////////////////////////////////////////////////Imprimir platos/////////////////////////////////////////
+
+    function pintaComidas(comidas) {
+      //vaciamos el elemento html donde vamosa poner los platos y creamos un fragment
+      divResultados.innerHTML = "";
+      const fragment = new DocumentFragment();
+
+      /*Para cada comida creamos un clon de la plantilla o elemento <template>*/
+      comidas.meals.forEach((comida) => {
+        let clone = plantilla.cloneNode(true);
+        /*A continuación establecemos toda la información al clon que acabamos de crear*/
+        //En este caso,imagen será una variable que se reescriba varias veces en función de nuestras necesidades
+        let imagen = clone.querySelector(".mealImage");
+        imagen.src = comida.strMealThumb;
+        //le ponemos también el pais de la comida
+        clone.querySelector("strong.country").textContent = comida.strArea;
+        //establecemos el tipo de comida
+        clone.querySelector(".type").textContent = comida.strCategory;
+        //obtenemos el pais y de paso se lo esccribimos
+        let countryName = comida.strArea;
+        clone.querySelector("strong.country").textContent = countryName;
+        imagen = clone.querySelector(".countryFlag");
+
+        /*Como unas comidas pueden tener un pais desconocido tenemos que contemplar ese caso,y si se da
+        no tendría asignada la imagen de una bandera ,por lo que no entraría en el if de abajo*/
+        if (clone.querySelector("strong.country").textContent != "Unknown") {
+          /*si el pais no es desconocido llamamos a la funcion establish flag,que bsucará la correspondencia entre
+          el array de paises y su abrebiatura para construir la url de la imagen de la bandera que necesitamos*/
+          imagen.src = establishFlag(countryName);
+        } else {
+          //si el pais es desconocido es string de la imagen la quitamos pues no existe la bandera de un pais desconocido
+          imagen.remove();
+        }
+
+        //le ponemos ahora el nombre de la comida
+        clone.querySelector(".mealName").textContent = comida.strMeal;
+        //ahora le ponemos los nombres de los 4 ingredientes principales
+        clone.querySelector(".ingredient1").textContent = comida.strIngredient1;
+        clone.querySelector(".ingredient2").textContent = comida.strIngredient2;
+        clone.querySelector(".ingredient3").textContent = comida.strIngredient3;
+        clone.querySelector(".ingredient4").textContent = comida.strIngredient4;
+
+        /*para construir la foto de los ingredientes necesitamos saber sus nombres y con la variable urlFotoIngredientes
+         podremos obtener una imagen de los ingredintes*/
+        let imagenIngrediente1 = clone.querySelector(".ingredient1image");
+        imagenIngrediente1.src = urlFotoIngredientes + comida.strIngredient1 + ".png";
+
+        let imagenIngrediente2 = clone.querySelector(".ingredient2image");
+        imagenIngrediente2.src = urlFotoIngredientes + comida.strIngredient2 + ".png";
+
+        let imagenIngrediente3 = clone.querySelector(".ingredient3image");
+        imagenIngrediente3.src = urlFotoIngredientes + comida.strIngredient3 + ".png";
+
+        let imagenIngrediente4 = clone.querySelector(".ingredient4image");
+        imagenIngrediente4.src = urlFotoIngredientes + comida.strIngredient4 + ".png";
+
+        //Establecemos tambien las etiquetas con la siguiente función
+        printTags(clone, comida);
+
+        //cuando ya tenemos el clon completo lo añadimos a fragment hasta tener todos los elementos
+        fragment.appendChild(clone);
+      });
+      //A su vez añadimos fragment al div de resultados
+      divResultados.appendChild(fragment);
+    }
+
+    //Función auxiliar para pintar las banderas a los platos
+    function establishFlag(nombrePais) {
+      //tenemos que buscar el pais en el array de regiones y obtener el indice
+      let indice = region.indexOf(nombrePais);
+      //con ese indice sacamos la abreviación
+      let countryAbrev = countryFlags[indice];
+      //y establecemos esa abreviación en la url que nos traerá la abreviatura correspondiente
+      return "https://www.themealdb.com/images/icons/flags/big/32/" + countryAbrev + ".png";
+    }
+
+    //funcion auxiliar para pintar las etiquetas a los platos a la que le pasamos el clon  y la comida que hemos obtenido de la api
+    function printTags(clone, comida) {
+      //declaramos la parte del clon donde irán las etiqueteas
+      let zonaEtiquetas = clone.querySelector(".tags");
+      //obtenemos todas las etqiuetas de una comida
+      let strTags = comida.strTags;
+      let nuevalineaEtiqueta;
+      //si hay etiquetas entones las separaremos con split,y por cada una de ellas añadimos al clon una linea de html
+      if (strTags) {
+        let listaEtiquetas = strTags.split(",");
+        listaEtiquetas.forEach((etiqueta) => {
+          if (etiqueta) {
+            nuevalineaEtiqueta = '<p class=" rounded-4 bg-secondary-subtle align-content-center mx-2 px-2">#' + etiqueta + "</p>";
+            zonaEtiquetas.innerHTML += nuevalineaEtiqueta;
+          }
+        });
+      } else {
+        /** Si la comida no trae etiquetas entonces mostraremos un mensaje de que no hay etiquetas*/
+        nuevalineaEtiqueta = '<p class="align-content-center mx-2 px-5"><bold>No tags</bold></p>';
+        zonaEtiquetas.innerHTML += nuevalineaEtiqueta;
+      }
+    }
+
+    //Funcion asincrona para obtener todas las comidas que contengan el nombre que le hemos escrito
+    //La url de la que haremos fetech será la variable URLComidas + ?s= + lo que queramos,pues ?s= es para declarar la variable
+    //en la url del nombre de comida
+    async function getMealsByName(nombreComida) {
+      let urlFetch = urlComidas + "?s=" + nombreComida;
+      let listaComidas = await fetch(urlFetch);
+      let json = await listaComidas.json();
+      return json;
+    }
+
+    ////////////////////////////////////////////Obtención de todas las categorías////////////////
+    //funcion para obtener todas las categorías que pondremos en el filtro
+    async function getAllCategories() {
+      const urlFetch = listCategories;
+      const response = await fetch(urlFetch);
+      const json = await response.json();
+      return json;
+    }
+    /**Cuando tengamos toddas las categorías las añadiremos al desplegable del filtro con una linea de HTML */
+    getAllCategories().then((categories) => {
+      categories.meals.forEach((category) => {
+        let categoria = document.querySelector("#categoria");
+        categoria.innerHTML += `<option value="${category.strCategory}">${category.strCategory}</option>`;
+      });
+    });
+
+    ////////////////////////////////////////////////////////Aplicación de los filtros/////////////////////////////////
+
+    //Preparamos dos arrays que nos servirán en los filtros
+    let arrayFiltrado = new Array();
+    let arrayPreparado = new Array();
+
+    //Cuando hagamos click en el botón de aplicar filtros ejecutaremos aplicarFiltrosSeleccionados
+    btnaplicarFiltros.addEventListener("click", aplicarFiltrosSeleccionados);
+    function aplicarFiltrosSeleccionados() {
+      //lo primero que haré será vaciar los arrays
+      arrayFiltrado = [];
+      arrayPreparado = [];
+      //Realizaré una busqueda por nombre como se han hecho siempre (con esto sacaremos una copia tal como la queremos del array resultante de comidas)
+      getMealsByName(nombreComida).then((comidasResultantesSBN) => {
+        //copiamos el array resultante de la búsqueda en arrayPreparado
+        if (comidasResultantesSBN.meals) {
+          comidasResultantesSBN.meals.forEach((plato) => {
+            arrayPreparado.push(plato);
+          });
+          //una vez tengo ya preparado mi array me copio el array resultante de la búsqueda en arrayFiltrado
+          arrayFiltrado = arrayPreparado.slice();
+
+          //Ahora,si hay algún filtro que se ha modificado(es decir,que su valor no sea "--")empezaremos a aplicar filtros
+          if (
+            pais.options[pais.selectedIndex].value != "--" ||
+            categoria.options[categoria.selectedIndex].value != "--" ||
+            etiqueta.options[etiqueta.selectedIndex].value != "--"
+          ) {
+            arrayPreparado.forEach((plato) => {
+              //si el pais seleccionado no es el del plato y su valor tampoco es "--":
+              if (pais.options[pais.selectedIndex].value != plato.strArea && pais.options[pais.selectedIndex].value != "--") {
+                //filtraremos dejando en el array aquellos paises que sí coincidan con el  pais seleccionado
+                arrayFiltrado = arrayFiltrado.filter((plato) => plato.strArea == pais.options[pais.selectedIndex].value);
+              }
+              //del mismo modo trabajamos con la categoría
+              if (
+                categoria.options[categoria.selectedIndex].value != plato.strCategory &&
+                categoria.options[categoria.selectedIndex].value != "--"
+              ) {
+                arrayFiltrado = arrayFiltrado.filter((plato) => plato.strCategory == categoria.options[categoria.selectedIndex].value);
+              }
+              /*En el caso de las etiquetas: si un plato tiene etiquetas que no son la etiqueta seleccionada ni la opción seleccionada es "--" o bien se da la condición unica de que los platos no tengan etiquetas entramos al if*/
+              if (
+                (plato.strTags != null &&
+                  !plato.strTags.toUpperCase().includes(etiqueta.options[etiqueta.selectedIndex].value.toUpperCase()) &&
+                  etiqueta.options[etiqueta.selectedIndex].value != "--") ||
+                plato.strTags == null
+              ) {
+                //si la opción de etiqueta seleccionada no es "--"
+                if (etiqueta.options[etiqueta.selectedIndex].value != "--") {
+                  //entonces hallaremos el indice del plato en nuestro array
+                  let indexPlato = arrayFiltrado.indexOf(plato);
+                  //con ese indice le sacaremos del array filtrado,pues no cumple con la etiqueta seleccionada
+                  if (indexPlato != -1) {
+                    arrayFiltrado.splice(indexPlato, 1);
+                  }
+                }
+              }
+            });
+          }
+          //una vez hayamos filtrado las commidas lo pintaremos con la función pintaComidasFiltradas
+          pintaComidasFiltradas(arrayFiltrado);
+        }
+      });
+
+      //Realizaré otra búsqueda por ingrediente para los filtros
+      getIngredientsByName(nombreIngrediente2).then((meals) => {
+        //Si el array meals del objeto meal no está vacío:
+        if (meals.meals) {
+          //Por cada elemento del array meals del objeto meals =>
+          meals.meals.forEach((meal) => {
+            //Invocamos la función asíncrona de obtener los platos por ingrediente pasándole el nombre del plato
+            getMealsByName(meal.strMeal).then((comidasResultantesSBI) => {
+              //Entonces de cada elemento del array meals del objeto "comidasResultantesSBI" =>
+              comidasResultantesSBI.meals.forEach((plato) => {
+                //Agregamos el elemento plato al array de "arrayPreparado"
+                arrayPreparado.push(plato);
+
+                //Igualamos "arrayFiltrado" con "arrayPreparado" para que tenga los mismos elementos
+                arrayFiltrado = arrayPreparado;
+
+                //Ahora, si hay algún filtro que se ha modificado (es decir,que su valor no sea "--") empezaremos a aplicar filtros
+                if (
+                  pais.options[pais.selectedIndex].value != "--" ||
+                  categoria.options[categoria.selectedIndex].value != "--" ||
+                  tag.options[tag.selectedIndex].value != "--"
+                ) {
+                  //De cada elemento del arrayPreparado =>
+                  arrayPreparado.forEach((plato) => {
+                    //si el pais seleccionado no es el del plato y su valor tampoco es "--":
+                    if (pais.options[pais.selectedIndex].value != plato.strArea && pais.options[pais.selectedIndex].value != "--") {
+                      //filtraremos dejando en el array aquellos paises que sí coincidan con el  pais seleccionado
+                      arrayFiltrado = arrayFiltrado.filter((plato) => plato.strArea == pais.options[pais.selectedIndex].value);
+                    }
+                    //Del mismo modo trabajamos con la categoría:
+                    if (
+                      categoria.options[categoria.selectedIndex].value != plato.strCategory &&
+                      categoria.options[categoria.selectedIndex].value != "--"
+                    ) {
+                      arrayFiltrado = arrayFiltrado.filter((plato) => plato.strCategory == categoria.options[categoria.selectedIndex].value);
+                    }
+                    //En el caso de las etiquetas: si un plato tiene etiquetas que no son la etiqueta seleccionada ni la opción
+                    //seleccionada es "--" o bien se da la condición unica de que los platos no tengan etiquetas:
+                    if (
+                      (plato.strTags != null &&
+                        !plato.strTags.includes(tag.options[tag.selectedIndex].value) &&
+                        tag.options[tag.selectedIndex].value != "--") ||
+                      plato.strTags == null
+                    ) {
+                      //Si la opción de etiqueta seleccionada no es "--":
+                      if (tag.options[tag.selectedIndex].value != "--") {
+                        //entonces hallaremos el indice del plato en nuestro array
+                        let indexPlato = arrayFiltrado.indexOf(plato);
+                        //Con ese indice le sacaremos del array filtrado,pues no cumple con la etiqueta seleccionada
+                        if (indexPlato != -1) {
+                          arrayFiltrado.splice(indexPlato, 1);
+                        }
+                      }
+                    }
+                  });
+                }
+                //Una vez hayamos filtrado las commidas lo pintaremos con la función pintaComidasFiltradas
+                pintaComidasFiltradas(arrayFiltrado);
+              });
+            });
+          });
+        }
+      });
+    }
+
+    //Por último tenemos esta función que pinta la comida filtrada,pues en el anterior pintaComidas el array que le pasabamos tenía 3 niveles de anidamiento(comidas.meals.meals),mientras que este pintaComidas trabaja con 2(comidas.meals)
+    function pintaComidasFiltradas(comidas) {
+      divResultados.innerHTML = "";
+      const fragment = new DocumentFragment();
+
+      comidas.forEach((comida) => {
+        let clone = plantilla.cloneNode(true);
+        let imagen = clone.querySelector(".mealImage");
+        imagen.src = comida.strMealThumb;
+        clone.querySelector(".country").textContent = comida.strArea;
+        clone.querySelector(".type").textContent = comida.strCategory;
+        let countryName = comida.strArea;
+        clone.querySelector("strong.country").textContent = countryName;
+
+        imagen = clone.querySelector(".countryFlag");
+        if (clone.querySelector(".country").textContent != "Unknown") {
+          imagen.src = establishFlag(countryName);
+        }
+
+        clone.querySelector(".mealName").textContent = comida.strMeal;
+        clone.querySelector(".ingredient1").textContent = comida.strIngredient1;
+        clone.querySelector(".ingredient2").textContent = comida.strIngredient2;
+        clone.querySelector(".ingredient3").textContent = comida.strIngredient3;
+        clone.querySelector(".ingredient4").textContent = comida.strIngredient4;
+
+        //para construir la foto de los ingredientes necesitamos saber sus nombres
+        let imagenIngrediente1 = clone.querySelector(".ingredient1image");
+        imagenIngrediente1.src = urlFotoIngredientes + comida.strIngredient1 + ".png";
+
+        let imagenIngrediente2 = clone.querySelector(".ingredient2image");
+        imagenIngrediente2.src = urlFotoIngredientes + comida.strIngredient2 + ".png";
+
+        let imagenIngrediente3 = clone.querySelector(".ingredient3image");
+        imagenIngrediente3.src = urlFotoIngredientes + comida.strIngredient3 + ".png";
+
+        let imagenIngrediente4 = clone.querySelector(".ingredient4image");
+        imagenIngrediente4.src = urlFotoIngredientes + comida.strIngredient4 + ".png";
+
+        printTags(clone, comida);
+
+        fragment.appendChild(clone);
+      });
+      divResultados.appendChild(fragment);
+    }
+
+  </script>
+  <script>
+    //Declaro las variables del input y del botón para la busqueda de los ingredientes
+    const nombreIngrediente = document.querySelector("#nombreIngrediente");
+    const busquedaIngrediente = document.querySelector("#searchByIngredient");
+
+    //Declaro las variables para luego pintar los platos en estos
+    const plantillaCard = document.querySelector("#meal").content;
+    const divCards = document.querySelector("#results");
+
+    //Variable para almacenar las options del datalist
+    const datalistOptions = document.querySelector("#datalistOptions");
+
+    //url de los platos de la API
+    const urlIngredients = "https://www.themealdb.com/api/json/v1/1/";
+    const listIngredients = "https://www.themealdb.com/api/json/v1/1/list.php?i=list";
+
+    //Variable que incluirá en nombre de ingrediente que usaremos más tarde
+    let nombreIngrediente2;
+
+    //Array de paises
+    const regiones = [
+      "British",
+      "American",
+      "French",
+      "Canadian",
+      "Jamaican",
+      "Chinese",
+      "Dutch",
+      "Egyptian",
+      "Greek",
+      "Indian",
+      "Irish",
+      "Italian",
+      "Japanese",
+      "Kenian",
+      "Malaysian",
+      "Mexican",
+      "Moroccan",
+      "Croatian",
+      "Norwegian",
+      "Portuguese",
+      "Russian",
+      "Argentinian",
+      "Spanish",
+      "Slovakian",
+      "Thai",
+      "Arabian",
+      "Vietnamese",
+      "Turkish",
+      "Syrian",
+      "Argelian",
+      "Tunisian",
+      "Polish",
+      "Filipino",
+    ];
+
+    //Array del código de paises
+    const banderaPaises = [
+      "gb",
+      "us",
+      "fr",
+      "ca",
+      "jm",
+      "cn",
+      "nl",
+      "eg",
+      "gr",
+      "in",
+      "ie",
+      "it",
+      "jp",
+      "kn",
+      "my",
+      "mx",
+      "ma",
+      "hr",
+      "no",
+      "pt",
+      "ru",
+      "ar",
+      "es",
+      "sk",
+      "th",
+      "sa",
+      "vn",
+      "tr",
+      "sy",
+      "dz",
+      "tn",
+      "pl",
+      "ph",
+    ];
+
+    //Array de etiquetas
+    const etiquetas = [
+      "Rice",
+      "Sidedish",
+      "Speciality",
+      "Fruity",
+      "Pudding",
+      "Dessert",
+      "Snack",
+      "Treat",
+      "Summer",
+      "Dairy",
+      "Tart",
+      "Cake",
+      "Sweet",
+      "Breakfast",
+      "Greasy",
+      "Unhealthy",
+      "Calorific",
+      "BBQ",
+      "Bun",
+      "Baking",
+      "Heavy",
+      "Nutty",
+      "Light ",
+      "Desert",
+      "Caramel",
+      "Soup",
+      "Dinnerparty",
+      "Chocolate",
+      "Vegetables",
+      "Egg",
+      "Glazed",
+      "Fish",
+      "Seafood",
+      "Shellfish",
+      "Pie",
+      "Warm",
+      "Mainmeal",
+      "Speciality",
+      "Snack",
+      "Strongflavor",
+      "Alcoholic",
+      "Meat",
+      "Datenight",
+      "Expensive",
+      "Cheasy",
+      "Chilli",
+      "Curry",
+      "Spicy",
+      "Savory",
+      "Stew",
+      "Vegan",
+      "Paella",
+      "Mild",
+      "Pulse",
+      "Pasta",
+      "Fresh",
+      "Pancake",
+      "Sausages",
+    ];
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////FUNCIONES ASÍNCRONAS///////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Función asíncrona para obtener los platos por nombre
+    async function getIngredientsByName(name) {
+      //Creamos una variable que sea igual a "urlIngredients" + "filter.php?i=" + el nombre que introduzca el usuario
+      const urlFetch = urlIngredients + "filter.php?i=" + name;
+      //Response coge el argumento que le pasamos y contiene la respuesta
+      const response = await fetch(urlFetch);
+      //Que recupera el archivo json a través de la red
+      const json = await response.json();
+      //Y devuelve ese objeto para utilizarlo
+      return json;
+    }
+
+    //Función asíncrona para obtener todos los ingrendientes
+    async function getAllIngredients() {
+      //Creamos una variable que sea igual a "listIngredients"
+      const urlFetch = listIngredients;
+      //Response coge el argumento que le pasamos y contiene la respuesta
+      const response = await fetch(urlFetch);
+      //Que recupera el archivo json a través de la red
+      const json = await response.json();
+      //Y devuelve ese objeto para utilizarlo
+      return json;
+    }
+
+    //Función asíncrona para obtener los platos aleatoriamente
+    async function showRandomMeals() {
+      //Creamos una variable que sea igual a la url de la API que nos muestra un plato aleatorio
+      const urlFetch = "https://www.themealdb.com/api/json/v1/1/random.php";
+      //Response coge el argumento que le pasamos y contiene la respuesta
+      const response = await fetch(urlFetch);
+      //Que recupera el archivo json a través de la red
+      const json = await response.json();
+      //Y devuelve ese objeto para utilizarlo
+      return json;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Creamos un bucle for de 8 veces para que pinte 8 platos en la página principal al entrar
+    for (i = 0; i < 8; i++) {
+      //Invocamos la función asíncrona de obtener platos aleatoriamente, y el objeto que nos trae
+      showRandomMeals().then((meals) => {
+        //Lo usamos para ejecutar la funcion de pintarMeals con ese objeto
+        pintarMeals(meals);
+      });
+    }
+
+    //Invocamos la función asíncrona de obtener todos los ingredientes
+    getAllIngredients().then((ingredients) => {
+      //Por cada meals del objeto ingredients =>
+      ingredients.meals.forEach((ingredient) => {
+        //Hacemos que se acumulen opciones en el datalistOptions con el nombre del ingrediente
+        datalistOptions.innerHTML += `<option value="${ingredient.strIngredient}"></option>`;
+      });
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////BUSQUEDA DE INGREDIENTES//////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Hacemos un eventListener submit al botón de buscar ingredientes
+    busquedaIngrediente.addEventListener("submit", (e) => {
+      //Cancelamos el evento del submit para que no se recargue la página
+      e.preventDefault();
+
+      //Si el párrafo de la busqueda por nombre contiene la clase "error-feedback":
+      if (document.querySelector("#mealName").parentNode.parentNode.querySelector(".text-danger").classList.contains("error-feedback")) {
+        //Removemos el texto en el párrafo del html en caso de haberlo
+        document.querySelector("#mealName").parentNode.parentNode.querySelector(".error-feedback").textContent = "";
+        //Y removemos al padre del input la clase "error" en caso de haberlo
+        document.querySelector("#mealName").parentNode.classList.remove("error");
+      }
+
+      document.querySelector("#mealName").value = "";
+
+      //Igualo esta variable a nulo declarada en el otro archivo js para que no haya problemas entre funciones
+      nombreComida = null;
+
+      //Creo una variable bandera que sea true
+      let valido = true;
+
+      //Ponemos una validación al usuario, en caso de que no se cumpla:
+      if (!validarIngrediente(nombreIngrediente)) {
+        //La variable bandera se cambia a false
+        valido = false;
+      }
+
+      //En caso de que la bandera sea true:
+      if (valido) {
+        //Limpiamos los cards o platos pintados en caso de que hubiese
+        divCards.innerHTML = "";
+
+        //Invocamos la función de resetear los filtros
+        resetearFiltros();
+
+        //Metemos el nombre introducido por el usuario en la variable "nombreIngrediente2" para más tarde (filtros)
+        nombreIngrediente2 = nombreIngrediente.value.trim();
+
+        //Invocamos la función asíncrona de obtener los platos por ingrediente pasándole el nombre introducido, quitando espacios al principio y al final
+        getIngredientsByName(nombreIngrediente.value.trim())
+          .then((meals) => {
+            //Entonces, si el array meals del objeto meals no está vacio:
+            if (meals.meals != null) {
+              //Removemos la calse "alert-danger" en caso de que haya e incluimos el "alert-light" en el webMessage declarado en el otro archivo js
+              webMessage.classList.remove("alert-danger");
+              webMessage.classList.add("alert-light");
+
+              //Hacemos que el mensaje dentro de la etiqueta del párrafo sea "Search results for the meal:" + el nombre del ingrediente introducido por el usuario
+              webMessage.querySelector("p").textContent = "Search results for the ingredient: '" + nombreIngrediente.value + "'";
+
+              //Por cada array meals del objeto meals:
+              meals.meals.forEach((meal) => {
+                //Invocamos la función asíncrona de obtener los platos por nombre pasándole el nombre de cada plato que hemos obtenido en la búsqueda por ingrediente
+                getMealsByName(meal.strMeal).then((meals) => {
+                  //Entonces del objeto que nos devuelve, es decir, meals, lo usamos para pintar las cards con la información de los platos
+                  pintarMeals(meals);
+                });
+              });
+
+              //Una vez pintado, limpiamos el cuadro de búsqueda por ingrediente
+              document.querySelector("#nombreIngrediente").value = "";
+
+              //Mostramos la caja de filtros que estaba oculto (se le indica que se encuentra oculto en el otro archivo js)
+              document.querySelector("#filtros").style.display = "block";
+
+              //En caso de que el array meals del objeto meals se encuentre vacío:
+            } else {
+              //Ocultamos la caja de filtros
+              document.querySelector("#filtros").style.display = "none";
+              //Lanzamos un nuevo error que contenga el siguiente mensaje: "No matching results for the meal:" + ingrediente introducido por el usuario
+              throw new Error("No matching results for the ingredient: '" + nombreIngrediente.value + "'");
+            }
+          })
+          .catch((error) => {
+            //Aquí recibe el error que se ha lanzado anteriormente y lo tratamos =>
+
+            //Creamos una variable que almacene el mensaje de error separado por ":"
+            const mensaje = error.toString().split(":");
+            //Quitamos el "alert-light" en el webMessage
+            webMessage.classList.remove("alert-light");
+            //Y agregamos la clase "alert-danger" en el webMessage
+            webMessage.classList.add("alert-danger");
+            //Hacemos que el mensaje dentro de la etiqueta del párrafo sea "Search results for the meal:" (mensaje[1]) + el nombre del ingrediente introducido por el usuario (mensaje[2])
+            webMessage.querySelector("p").textContent = mensaje[1] + ": " + mensaje[2];
+          });
+      }
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////BÚSQUEDA ANIDADA//////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Hacemos un eventListener click a los platos de los cards
+    divCards.addEventListener("click", (evento) => {
+      //Si se hace un click dentro del divCards, se halla el elemento clickado,
+      //entonces, si el padre del padre del elemento clickado contiene la clase "ingredient":
+      if (evento.target.parentNode.parentNode.classList.contains("ingredient")) {
+        //Creamos una variable contenga el nombre de la imagen clickada
+        let nombreIngrediente = evento.target.parentNode.parentNode.querySelector(".ingredient p").textContent;
+
+        //Metemos el nombre introducido por el usuario en la variable "nombreIngrediente2" para más tarde (filtros)
+        nombreIngrediente2 = nombreIngrediente;
+
+        //Limpiamos los cards o platos pintados en caso de que hubiese
+        divCards.innerHTML = "";
+
+        //Hacemos que el mensaje dentro de la etiqueta del párrafo sea "Search results for the meal:" + el nombre del ingrediente clickado anteriormente
+        webMessage.querySelector("p").textContent = "Search results for the ingredient: '" + nombreIngrediente + "'";
+
+        //Invocamos la función asíncrona de obtener todos los ingredientes
+        getIngredientsByName(nombreIngrediente).then((meals) => {
+          //Por cada array meals del objeto meals:
+          meals.meals.forEach((meal) => {
+            //Invocamos la función asíncrona de obtener los platos por nombre pasándole el nombre de cada plato que hemos obtenido en la búsqueda por ingrediente
+            getMealsByName(meal.strMeal).then((meals) => {
+              //Entonces del objeto que nos devuelve, es decir, meals, lo usamos para pintar las cards con la información de los platos
+              pintarMeals(meals);
+            });
+          });
+        });
+
+        //Mostramos la caja de filtros que estaba oculto
+        document.querySelector("#filtros").style.display = "block";
+
+        //Evitamos la propagación adicional del evento actual
+        evento.stopPropagation();
+      }
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////VALIDACIONES EN LAS BÚSQUEDAS//////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Función para validar que el campo de busqueda por ingrediente no se encuentre vacío
+    function validarIngrediente(elemento) {
+      const regex = /^[a-zA-Z\s]*$/;
+
+      //En caso de dejarlo vacío:
+      if (!elemento.value.trim()) {
+        //Agregamos un texto para que el usuario sepa del error en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "You must introduce something in the field above";
+        //Agregar al padre del input la clase "error"
+        elemento.parentNode.classList.add("error");
+        //Devolver false
+        return false;
+      } else if (!elemento.value.trim().match(regex)) {
+        //Agregamos un texto para que el usuario sepa del error en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "Please introduce a valid meal name";
+        //Agregar al padre del input la clase "error"
+        elemento.parentNode.classList.add("error");
+        //Devolver false
+        return false;
+      } else {
+        //Sino remover el texto en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "";
+        //Y remover al padre del input la clase "error"
+        elemento.parentNode.classList.remove("error");
+        //Devolver true
+        return true;
+      }
+    }
+
+    //Función para validar que el campo de busqueda por nombre no se encuentre vacío
+    function validarNombre(elemento) {
+      const regex = /^[a-zA-Z\s]+$/;
+
+      //En caso de dejarlo vacío:
+      if (!elemento.value.trim()) {
+        //Agregamos un texto para que el usuario sepa del error en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "You must introduce something in the field above";
+        //Agregar al padre del input la clase "error"
+        elemento.parentNode.classList.add("error");
+        //Devolver false
+        return false;
+      } else if (!elemento.value.trim().match(regex)) {
+        //Agregamos un texto para que el usuario sepa del error en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "Please introduce a valid meal name";
+        //Agregar al padre del input la clase "error"
+        elemento.parentNode.classList.add("error");
+        //Devolver false
+        return false;
+      } else {
+        //Sino remover el texto en el párrafo del html
+        elemento.parentNode.parentNode.querySelector(".error-feedback").textContent = "";
+        //Y remover al padre del input la clase "error"
+        elemento.parentNode.classList.remove("error");
+        //Devolver true
+        return true;
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////FUNCIONES PARA PINTAR/////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Funcion para pintar los platos en los cards
+    function pintarMeals(meals) {
+      //Creamos una variable fragment, donde iremos acumulando clones de la plantilla
+      const fragment = document.createDocumentFragment();
+
+      //Para cada array meals del objeto meals:
+      meals.meals.forEach((meal) => {
+        //CAMBIAR TODOS LAS IDS A CLASES PORQUE SE REPITEN
+
+        //Ponemos la imagen del plato
+        plantillaCard.querySelector(".mealImage").src = meal.strMealThumb;
+        //Ponemos el nombre del plato
+        plantillaCard.querySelector(".mealName").textContent = meal.strMeal;
+
+        //Ponemos la categoria del plato
+        plantillaCard.querySelector(".type").textContent = meal.strCategory;
+
+        //Ponemos el pais del plato
+        plantillaCard.querySelector("strong.country").textContent = meal.strArea;
+
+        //En caso de que el nombre del pais del plato sea distinto "Unknown":
+
+        if (plantillaCard.querySelector("strong.country").textContent != "Unknown") {
+          //Ejecutamos la función que nos pone la bandera del país
+          plantillaCard.querySelector(".countryFlag").src = establishFlag(meal.strArea);
+        } else {
+          //Sino no ponemos ninguna imagen de bandera del pais
+          plantillaCard.querySelector(".countryFlag").src = "";
+        }
+
+        //Ponemos el nombre del primer ingrediente
+        plantillaCard.querySelector(".ingredient1").textContent = meal.strIngredient1;
+        //Ponemos la imagen del primer ingrediente
+        plantillaCard.querySelector(".ingredient1image").src = `https://www.themealdb.com/images/ingredients/${meal.strIngredient1}-small.png`;
+
+        //Ponemos el nombre del segundo ingrediente
+        plantillaCard.querySelector(".ingredient2").textContent = meal.strIngredient2;
+        //Ponemos la imagen del segundo ingrediente
+        plantillaCard.querySelector(".ingredient2image").src = `https://www.themealdb.com/images/ingredients/${meal.strIngredient2}-small.png`;
+
+        //Ponemos el nombre del tercer ingrediente
+        plantillaCard.querySelector(".ingredient3").textContent = meal.strIngredient3;
+        //Ponemos la imagen del tercer ingrediente
+        plantillaCard.querySelector(".ingredient3image").src = `https://www.themealdb.com/images/ingredients/${meal.strIngredient3}-small.png`;
+
+        //Ponemos el nombre del cuarto ingrediente
+        plantillaCard.querySelector(".ingredient4").textContent = meal.strIngredient4;
+        //Ponemos la imagen del cuarto ingrediente
+        plantillaCard.querySelector(".ingredient4image").src = `https://www.themealdb.com/images/ingredients/${meal.strIngredient4}-small.png`;
+
+        //Ejecutamos la función que nos pinta las etiquetas del plato
+        printTags(plantillaCard, meal);
+
+        //Clonamos la plantilla y la agregamos a un fragmento que ira acumulando todas las cards
+        const clone = plantillaCard.cloneNode(true);
+        fragment.appendChild(clone);
+      });
+      //Añadimos el fragmento con todas las cards al contenedor de las cards
+      divCards.appendChild(fragment);
+    }
+
+    //Función para pintar las etiquetas de los platos
+    function printTags(plantillaCard, meal) {
+      //Vaciamos las etiquetas en caso de que hayan
+      plantillaCard.querySelector(".tags").innerHTML = "";
+
+      //Creamos una variable que tenga las etiquetas del plato
+      let strTags = meal.strTags;
+      //Creamos otra variable vacía
+      let nuevalineaEtiqueta;
+
+      //En caso de que "strTags" no esté vacio:
+      if (strTags) {
+        //Dividimos las etiquetas por ","
+        let listaEtiquetas = strTags.split(",");
+        //Ordenamos la lista de etiquetas
+        listaEtiquetas.sort();
+
+        //Por cada etiqueta que haya en la lista de etiquetas =>
+        listaEtiquetas.forEach((etiqueta) => {
+          //Si la etiqueta no está vacía:
+          if (etiqueta) {
+            //Agregamos la etiqueta en la variable creada anteriormente como párrafo con sus estilos
+            nuevalineaEtiqueta = '<p class=" rounded-4 bg-secondary-subtle align-content-center mx-2 px-2">#' + etiqueta + "</p>";
+            //Y lo vamos acumulando en la plantillaCard
+            plantillaCard.querySelector(".tags").innerHTML += nuevalineaEtiqueta;
+          }
+        });
+      } else {
+        //Sino la variable será no tags
+        nuevalineaEtiqueta = '<p class="align-content-center mx-2 px-5"><bold>No tags</bold></p>';
+        //Y lo metemos en la plantillaCard
+        plantillaCard.querySelector(".tags").innerHTML = nuevalineaEtiqueta;
+      }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////FILTROS//////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    ///////////Código para mostrar opciones en el front//////////////////////////
+    //Creamos la variable pais que será el select de pais del html
+    let pais = document.querySelector("#pais");
+    //Para cada region (array de arriba) =>
+    regiones.forEach((region) => {
+      //Iremos acumulando los option en el select con el nombre de los paises
+      pais.innerHTML += `<option value="${region}">${region}</option>`;
+    });
+
+    //Creamos la variable tag que será el select de la etiqueta del html
+    let tag = document.querySelector("#etiqueta");
+    //Para cada etiqueta (array de arriba) =>
+    etiquetas.forEach((etiqueta) => {
+      //Iremos acumulando los option en el select con el nombre de las etiquetas
+      tag.innerHTML += `<option value="${etiqueta}">${etiqueta}</option>`;
+    });
+
+    /////////////////////////////////////////////////////////////////////////
+
+  </script>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
